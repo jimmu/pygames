@@ -1,1 +1,2 @@
 # pygames
+Learning pygamezero
