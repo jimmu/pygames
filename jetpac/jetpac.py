@@ -49,7 +49,12 @@ def update(): # Pygame Zero update function
     if player.right >WIDTH: player.left=0
     if player.left <0: player.right =WIDTH;
 
-    if keyboard.up : ySpeed += JETPACK_STRENGTH
+    if keyboard.up :
+        ySpeed += JETPACK_STRENGTH
+        player.image="playerwithjet"
+    else :
+        player.image="player"
+        
     #Now because of gravity
     ySpeed += GRAVITY
     player.bottom -= ySpeed
@@ -80,6 +85,7 @@ def update(): # Pygame Zero update function
         if (player.colliderect(rocketBase)) :
             fuel.right = rocketBase.left
             fuel.bottom = rocketBase.bottom
+            rocketBase.image="playerwithjet"
             gameState = "WIN"
         
     if gameState == "carryingStage1" :
