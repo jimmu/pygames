@@ -51,10 +51,12 @@ def draw(): # Pygame Zero draw function
         screen.draw.filled_rect((Rect((platform.left, platform.top), (platform.width, platform.height))), platform.colour)
  
 def update(): # Pygame Zero update function
-    global ySpeed
-    global gameState
-    global rocketSpeed
+    handlePlayerMovement()
+    rocketPartChecks()
 
+def handlePlayerMovement():
+    global ySpeed
+    
     if keyboard.left:
         leftBound=getLeftBound()
         player.x -= 2
@@ -91,6 +93,10 @@ def update(): # Pygame Zero update function
             player.top = topBound
             ySpeed=0
 
+def rocketPartChecks():
+    global gameState
+    global rocketSpeed
+    
     #Have we picked up any rocket parts?
     if gameState == "lookingForStage1" :
         if (player.colliderect(rocketStage1)) :
@@ -135,6 +141,7 @@ def update(): # Pygame Zero update function
         rocketBase.bottom -= rocketSpeed
         rocketStage1.bottom -= rocketSpeed
         rocketStage2.bottom -= rocketSpeed
+    
 
 def getTopBound():
     global allThePlatforms
