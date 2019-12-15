@@ -4,14 +4,17 @@ import sys
 WIDTH = 1000 # Width of window
 HEIGHT = 800 # Height of window
 player = Actor("player") # Load in the player Actor image
-rocketBase = Actor("player")
-rocketStage1 = Actor("player")
-fuel = Actor("player")
+rocketBase = Actor("rocketbaseoff")
+rocketStage1 = Actor("rocketdoor")
+rocketStage2 = Actor("rocketnosewithoutperson")
+fuel = Actor("fuel")
 player.pos = 250, 100 # Set the player screen position
 rocketBase.left = 100
 rocketBase.bottom = HEIGHT
 rocketStage1.left =  500
 rocketStage1.bottom = HEIGHT
+rocketStage2.bottom=220
+rocketStage2.right=700
 fuel.left=300
 fuel.bottom=520
 gameState="lookingForStage1"
@@ -22,12 +25,18 @@ rocketSpeed=0
 
 def draw(): # Pygame Zero draw function
     global allThePlatforms
+    global gameState
     
-    screen.fill((128, 128, 128))
-    player.draw()
+    screen.fill((000, 000, 000))
+    if gameState != "WIN":
+        player.draw()
+    if gameState != "WIN":
+        fuel.draw()
+        
     rocketBase.draw()
     rocketStage1.draw()
-    fuel.draw()
+    rocketStage2.draw()
+
     for platform in allThePlatforms:
         screen.draw.filled_rect((Rect((platform["left"], platform["top"]), (platform["width"], platform["height"]))), platform["colour"])
  
@@ -77,6 +86,14 @@ def update(): # Pygame Zero update function
         if (player.colliderect(rocketBase)) :
             rocketStage1.left = rocketBase.left
             rocketStage1.bottom = rocketBase.top
+            gameState = "lookingForStage2"
+    elif gameState == "lookingForStage2" :
+        if (player.colliderect(rocketStage2)) :
+            gameState = "carryingStage2"        
+    elif gameState == "carryingStage2" :
+        if (player.colliderect(rocketBase)) :
+            rocketStage2.left = rocketStage1.left
+            rocketStage2.bottom = rocketStage1.top
             gameState = "lookingForFuel"
     elif gameState == "lookingForFuel" :
         if (player.colliderect(fuel)) :
@@ -85,12 +102,16 @@ def update(): # Pygame Zero update function
         if (player.colliderect(rocketBase)) :
             fuel.right = rocketBase.left
             fuel.bottom = rocketBase.bottom
-            rocketBase.image="playerwithjet"
+            rocketBase.image="rocketbaseon"
+            rocketStage2.image="rocketnose"
             gameState = "WIN"
         
     if gameState == "carryingStage1" :
         rocketStage1.left = player.right
         rocketStage1.bottom = player.top
+    elif gameState == "carryingStage2" :
+        rocketStage2.left = player.right
+        rocketStage2.bottom = player.top
     elif gameState == "carryingFuel" :
         fuel.left = player.right
         fuel.bottom = player.top
@@ -100,6 +121,7 @@ def update(): # Pygame Zero update function
         rocketSpeed += 0.1
         rocketBase.bottom -= rocketSpeed
         rocketStage1.bottom -= rocketSpeed
+        rocketStage2.bottom -= rocketSpeed
 
 def getTopBound():
     global allThePlatforms
