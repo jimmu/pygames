@@ -33,8 +33,23 @@ class Platform:
         self.bottom=top+height
         self.colour=colour
 
+class Alien:
+    def __init__(self, bottom, speed):
+        self.actor = Actor("player")
+        self.actor.right = 0
+        self.actor.bottom = bottom
+        self.speed = speed;
+
+    def move(self):
+        self.actor.right += self.speed;
+        if self.speed > 0 and self.actor.left > WIDTH:
+            self.actor.right = 0
+        elif self.actor.right < 0:
+            self.actor.left = WIDTH
+        
 def draw(): # Pygame Zero draw function
     global allThePlatforms
+    global allTheAliens
     global gameState
     
     screen.fill((000, 000, 000))
@@ -49,10 +64,20 @@ def draw(): # Pygame Zero draw function
 
     for platform in allThePlatforms:
         screen.draw.filled_rect((Rect((platform.left, platform.top), (platform.width, platform.height))), platform.colour)
+
+    for alien in allTheAliens:
+        alien.actor.draw()
  
 def update(): # Pygame Zero update function
+    handleAlienMovement()
     handlePlayerMovement()
     rocketPartChecks()
+
+def handleAlienMovement():
+    global allTheAliens
+    
+    for alien in allTheAliens:
+        alien.move()
 
 def handlePlayerMovement():
     global ySpeed
@@ -193,7 +218,11 @@ def makePlatforms():
                      Platform(300, 520, 300, 20, (255, 255, 0)),
                      Platform(700, 720, 200, 18, (2, 9, 244))
                     ]
+def makeAliens():
+    global allTheAliens
+    allTheAliens=[Alien(700, 1), Alien(450, -1.5), Alien(80, 3)]
                             
 # End of functions
 makePlatforms()
+makeAliens()
 ySpeed=0
