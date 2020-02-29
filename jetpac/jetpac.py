@@ -1,3 +1,4 @@
+import pgzrun
 from random import randint
 import sys
 
@@ -71,6 +72,7 @@ def draw(): # Pygame Zero draw function
 def update(): # Pygame Zero update function
     handleAlienMovement()
     handlePlayerMovement()
+    checkAlienCollisions()
     rocketPartChecks()
 
 def handleAlienMovement():
@@ -78,6 +80,15 @@ def handleAlienMovement():
     
     for alien in allTheAliens:
         alien.move()
+
+def checkAlienCollisions():
+    global allTheAliens
+
+    if gameState != "WIN" :
+        for alien in allTheAliens :
+            # Have we collided with this?
+            if (player.colliderect(alien.actor)) :
+                sys.exit()
 
 def handlePlayerMovement():
     global ySpeed
@@ -167,7 +178,6 @@ def rocketPartChecks():
         rocketStage1.bottom -= rocketSpeed
         rocketStage2.bottom -= rocketSpeed
     
-
 def getTopBound():
     global allThePlatforms
     topBound=0
@@ -226,3 +236,5 @@ def makeAliens():
 makePlatforms()
 makeAliens()
 ySpeed=0
+
+pgzrun.go()
